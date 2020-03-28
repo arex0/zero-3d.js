@@ -25,7 +25,7 @@ zero3d(element[,options])
     }
 ```
 ### example
-I use zero-3d in my app [design 3d](https://arex0.com/apps/deign.html), alse you can try this code:
+I use zero-3d in my app [design 3d](https://arex0.com/apps/design.html), alse you can try this code:
 ```html
 <style>
     :root{
