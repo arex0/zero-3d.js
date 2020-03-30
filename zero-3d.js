@@ -25,9 +25,19 @@ function zero3d(ele, opts) {
     O.p = (opts&&opts.p) || 0
     render()
 
+    function startTouch(e) {
+        ArrayMethods.push.apply(touches, ArrayMethods.map.call(e.changedTouches, copyTouch))
+    }
+    function endTouch(e) {
+        ArrayMethods.forEach.call(e.changedTouches, touch => touches.splice(touches.findIndex(({ id }) => id == touch.identifier), 1))
+    }
+    root.addEventListener('touchstart', startTouch)
+    root.addEventListener('touchend', endTouch)
+    root.addEventListener('touchcancel', endTouch)
+
     if((opts&&opts.rotatable)){
         const PI = Math.PI / 180
-        let X = 0, Y = 0, Zx = 0, Zy = 0
+        let X = 0, Y = 0, Zx = 0, Zy = 0,useController = false
         function rotateXY(e) {
             if (touches.length >= 2) return
             O.rx -= (e.pageY - Y) * O.speed
@@ -49,10 +59,20 @@ function zero3d(ele, opts) {
             root.addEventListener('pointerdown', startRotateXY)
         }
         function rotateZ(e) {
-            O.rz = Math.atan2(e.pageY - Zy, e.pageX - Zx) / PI + 180
-            render()
+            if (touches.length >= 2) {
+                let s1 = touches[0],
+                    s2 = touches[1],
+                    t1 = findTouch(e.changedTouches, touches[0].id) || touches[0],
+                    t2 = findTouch(e.changedTouches, touches[1].id) || touches[1]
+                    O.rz += (Math.atan2(t1.pageY-t2.pageY,t1.pageX-t2.pageX)-Math.atan2(s1.pageY-s2.pageY,s1.pageX-s2.pageX))/PI *0.05
+                render()
+            }else if(useController){
+                O.rz = Math.atan2(e.pageY - Zy, e.pageX - Zx) / PI + 180
+                render()
+            }
         }
         function startRotateZ() {
+            useController = true
             let p = O.rzc.getBoundingClientRect()
             Zx = p.x + (p.width >> 1)
             Zy = p.y + (p.height >> 1)
@@ -61,20 +81,17 @@ function zero3d(ele, opts) {
             document.addEventListener('pointerup', stopRotateZ)
         }
         function stopRotateZ() {
+            useController = false
             document.removeEventListener('pointerup', stopRotateZ)
             document.removeEventListener('pointermove', rotateZ)
             O.rzc.addEventListener('pointerdown', startRotateZ)
         }
+
         root.addEventListener('pointerdown', startRotateXY)
         O.rzc && O.rzc.addEventListener('pointerdown', startRotateZ)
+        root.addEventListener('touchmove', rotateZ)
     }
     if((opts&&opts.scalable)){
-        function startTouch(e) {
-            ArrayMethods.push.apply(touches, ArrayMethods.map.call(e.changedTouches, copyTouch))
-        }
-        function endTouch(e) {
-            ArrayMethods.forEach.call(e.changedTouches, touch => touches.splice(touches.findIndex(({ id }) => id == touch.identifier), 1))
-        }
         function scale(e) {
             if (e.wheelDelta) {
                 O.size += e.wheelDelta / 1200
@@ -85,9 +102,6 @@ function zero3d(ele, opts) {
                 render()
             }
         }
-        root.addEventListener('touchstart', startTouch)
-        root.addEventListener('touchend', endTouch)
-        root.addEventListener('touchcancel', endTouch)
         root.addEventListener('touchmove', scale)
         root.addEventListener("wheel", scale)
     }
