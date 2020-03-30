@@ -1,6 +1,6 @@
 const ArrayMethods = Array.prototype
 const hypot = (p1, p2) => Math.hypot(p1.pageX - p2.pageX, p1.pageY - p2.pageY)
-const copyTouch = touch => ({ id: touch.identifier, x: touch.pageX, y: touch.pageY })
+const copyTouch = touch => ({ id: touch.identifier, pageX: touch.pageX, pageY: touch.pageY })
 const findTouch = (touches, id) => ArrayMethods.find.call(touches, ({ identifier }) => identifier == id)
 
 function zero3d(ele, opts) {
