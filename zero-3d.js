@@ -25,15 +25,12 @@ function zero3d(ele, opts) {
     O.p = (opts&&opts.p) || 0
     render()
 
-    function startTouch(e) {
+    let startTouch = function(e){
         ArrayMethods.push.apply(touches, ArrayMethods.map.call(e.changedTouches, copyTouch))
     }
-    function endTouch(e) {
+    let endTouch = function(e) {
         ArrayMethods.forEach.call(e.changedTouches, touch => touches.splice(touches.findIndex(({ id }) => id == touch.identifier), 1))
     }
-    root.addEventListener('touchstart', startTouch)
-    root.addEventListener('touchend', endTouch)
-    root.addEventListener('touchcancel', endTouch)
 
     if((opts&&opts.rotatable)){
         const PI = Math.PI / 180
@@ -89,7 +86,16 @@ function zero3d(ele, opts) {
 
         root.addEventListener('pointerdown', startRotateXY)
         O.rzc && O.rzc.addEventListener('pointerdown', startRotateZ)
-        root.addEventListener('touchmove', rotateZ)
+
+        let start = startTouch,end = endTouch
+        startTouch = e =>{
+            start(e)
+            if(touches.length>=2) root.addEventListener('touchmove', rotateZ)
+        }
+        endTouch = e =>{
+            end(e)
+            if(touches.length<2) root.removeEventListener('touchmove', rotateZ)
+        }
     }
     if((opts&&opts.scalable)){
         function scale(e) {
@@ -98,13 +104,26 @@ function zero3d(ele, opts) {
                 render()
             } else if (touches.length >= 2) {
                 stopRotateXY()
-                O.size *= (hypot(findTouch(e.changedTouches, touches[0].id) || touches[0], findTouch(e.changedTouches, touches[1].id) || touches[1]) / hypot(touches[0], touches[1])) ** 0.1
+                O.size *= (hypot(findTouch(e.changedTouches, touches[0].id) || touches[0], findTouch(e.changedTouches, touches[1].id) || touches[1]) / hypot(touches[0], touches[1])) ** 0.05
                 render()
             }
         }
-        root.addEventListener('touchmove', scale)
         root.addEventListener("wheel", scale)
+
+        let start = startTouch,end = endTouch
+        startTouch = e =>{
+            start(e)
+            if(touches.length>=2) root.addEventListener('touchmove', scale)
+        }
+        endTouch = e =>{
+            end(e)
+            if(touches.length<2) root.removeEventListener('touchmove', scale)
+        }
     }
+
+    root.addEventListener('touchstart', startTouch)
+    root.addEventListener('touchend', endTouch)
+    root.addEventListener('touchcancel', endTouch)
     return new Proxy(O, {
         set: (t, p, v) => {
             t[p] = v
