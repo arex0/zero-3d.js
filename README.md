@@ -1,5 +1,5 @@
 # zero-3d.js
-The smallest cross-platform 3d solution in JS.[Github](https://github.com/arex0/zero-3d.js)
+The smallest cross-platform 3d solution in JS.[Github](https://github.com/arex0/zero-3d.js),see my blog [how to wirte zero-3d.js](https://arex0.com/blog/matrix3d).
 
 ## usage
 ```js
