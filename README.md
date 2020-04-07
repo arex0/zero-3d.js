@@ -1,5 +1,5 @@
 # zero-3d.js
-The smallest cross-platform 3d solution in JS.
+The smallest cross-platform 3d solution in JS.[Github](https://github.com/arex0/zero-3d.js)
 
 ## usage
 ```js
@@ -70,18 +70,21 @@ I use zero-3d in my app [design 3d](https://arex0.com/apps/design.html), alse yo
 
 <script src='./zero-3d.js'></script>
 <script>
-    let ctl_3d = zero3d(document.getElementById('zero-3d'),{
-        rotatable: true,
-        scalable: true,
-        root: document.body,
-        x: '-50%',
-        y: '-50%',
-        rx: 30,
-        ry: 45,
-        rz: 60,
-        rzc: document.getElementById('rotate-controller'),
-        size: .8,
-        p: 13.71,
+    let ele = document.getElementById('zero-3d')
+    ele.style.top = `calc(50vh - ${ele.offsetHeight/2}px)`
+    ele.style.left = `calc(50vw - ${ele.offsetWidth/2}px)`
+    let ctl_3d = zero3d(ele,{
+        rotatable:true,
+        scalable:true,
+        root:document,
+        x:-ele.offsetWidth/2,
+        y:-ele.offsetHeight/2,
+        rx:30,
+        ry:45,
+        rz:60,
+        rzc:document.getElementById('rotate-controller'),
+        size:.8,
+        p:13.71,
     })
     function setSeparation(d){
         ctl_3d.p = 1/(1.001-(d/1000)**.1) - 1/1.001
