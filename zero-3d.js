@@ -62,9 +62,6 @@ function zero3d(ele,opts){
         endTouch = function(e) {
             ArrayMethods.forEach.call(e.changedTouches, touch => touches.splice(touches.findIndex(({ id }) => id == touch.identifier), 1))
         }
-    root.addEventListener('touchstart', startTouch)
-    root.addEventListener('touchend', endTouch)
-    root.addEventListener('touchcancel', endTouch)
 
     if(opts&&opts.scalable){
         function scale(e) {
@@ -160,6 +157,9 @@ function zero3d(ele,opts){
         }
     }
 
+    root.addEventListener('touchstart', startTouch)
+    root.addEventListener('touchend', endTouch)
+    root.addEventListener('touchcancel', endTouch)
     return new Proxy(O, {
         set: (t, p, v) => {
             t[p] = v
