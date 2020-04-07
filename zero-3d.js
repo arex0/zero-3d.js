@@ -25,19 +25,20 @@ function zero3d(ele,opts){
         let x = O.rx*PI, y = O.ry*PI, z = O.rz*PI
         let cx = cos(x), sx = sin(x), cy = cos(y), sy = sin(y), cz = cos(z), sz = sin(z)
         /*
-        +-                                                                                                               -+
-        |       cy*cz*O.size            -cy*sz*O.size         sy*O.size              cy*cz*O.x-cy*sz*O.y+sy*O.z           |
-        | (cx*sz+sx*sy*cz)*O.size  (cx*cz-sx*sy*sz)*O.size  -sx*cy*O.size  -cx*(sz-sx+cz-sx)*sy*cz*O.x+cx*cz-sx*sy*sz*O.y |
-        | (sx*sz-cx*sy*cz)*O.size  (sx*cz+cx*sy*sz)*O.size   cx*cy*O.size  -sx*(sz+cx+cz+cx)*sy*cz*O.x+sx*cz+cx*sy*sz*O.y |
-        |            0                        0                   0                               1                       |
-        +-                                                                                                               -+
+        +-                                                                  -+
+        |       cy*cz*O.size            -cy*sz*O.size         sy*O.size    0 |
+        | (cx*sz+sx*sy*cz)*O.size  (cx*cz-sx*sy*sz)*O.size  -sx*cy*O.size  0 |
+        | (sx*sz-cx*sy*cz)*O.size  (sx*cz+cx*sy*sz)*O.size   cx*cy*O.size  0 |
+        |            0                        0                   0        1 |
+        +-                                                                  -+
         */
         O.m.preMultiplySelf(
-           new DOMMatrix([  cy*cz*O.size,                   (cx*sz+sx*sy*cz)*O.size,                            (sx*sz-cx*sy*cz)*O.size,                            0,
-                            -cy*sz*O.size,                  (cx*cz-sx*sy*sz)*O.size,                            (sx*cz+cx*sy*sz)*O.size,                            0,
-                            sy*O.size,                      -sx*cy*O.size,                                      cx*cy*O.size,                                       0,
-                            0,     0,     0,     1
-                        ]))
+        new DOMMatrix([
+            cy*cz*O.size,   (cx*sz+sx*sy*cz)*O.size,    (sx*sz-cx*sy*cz)*O.size,    0,
+            -cy*sz*O.size,  (cx*cz-sx*sy*sz)*O.size,    (sx*cz+cx*sy*sz)*O.size,    0,
+            sy*O.size,      -sx*cy*O.size,              cx*cy*O.size,               0,
+            0,              0,                          0,                          1
+        ]))
         style.transform = O.m.toString()
         rzcv = (rzcv+O.rz)%360
         O.rzc&&O.rzc.style&&(O.rzc.style.transform = `rotateZ(${rzcv}deg)`)
