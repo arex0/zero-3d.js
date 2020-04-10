@@ -25,19 +25,19 @@ function zero3d(ele,opts){
         let x = O.rx*PI, y = O.ry*PI, z = O.rz*PI
         let cx = cos(x), sx = sin(x), cy = cos(y), sy = sin(y), cz = cos(z), sz = sin(z)
         /*
-        +-                                                                  -+
-        |       cy*cz*O.size            -cy*sz*O.size         sy*O.size    0 |
-        | (cx*sz+sx*sy*cz)*O.size  (cx*cz-sx*sy*sz)*O.size  -sx*cy*O.size  0 |
-        | (sx*sz-cx*sy*cz)*O.size  (sx*cz+cx*sy*sz)*O.size   cx*cy*O.size  0 |
-        |            0                        0                   0        1 |
-        +-                                                                  -+
+        +-                                                                    -+
+        |       cy*cz*O.size            -cy*sz*O.size         sy*O.size    O.x |
+        | (cx*sz+sx*sy*cz)*O.size  (cx*cz-sx*sy*sz)*O.size  -sx*cy*O.size  O.y |
+        | (sx*sz-cx*sy*cz)*O.size  (sx*cz+cx*sy*sz)*O.size   cx*cy*O.size  O.z |
+        |            0                        0                   0         1  |
+        +-                                                                    -+
         */
         O.m.preMultiplySelf(
         new DOMMatrix([
             cy*cz*O.size,   (cx*sz+sx*sy*cz)*O.size,    (sx*sz-cx*sy*cz)*O.size,    0,
             -cy*sz*O.size,  (cx*cz-sx*sy*sz)*O.size,    (sx*cz+cx*sy*sz)*O.size,    0,
             sy*O.size,      -sx*cy*O.size,              cx*cy*O.size,               0,
-            0,              0,                          0,                          1
+            O.x,            O.y,                        O.z,                        1
         ]))
         style.transform = O.m.toString()
         rzcv = (rzcv+O.rz)%360
