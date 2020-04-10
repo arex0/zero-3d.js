@@ -77,8 +77,6 @@ I use zero-3d in my app [design 3d](https://arex0.com/apps/design.html), alse yo
         rotatable:true,
         scalable:true,
         root:document,
-        x:-ele.offsetWidth/2,
-        y:-ele.offsetHeight/2,
         rx:30,
         ry:45,
         rz:60,
